@@ -27,7 +27,12 @@ const build = (process.env.GITHUB_SHA ?? 'local').slice(0, 7);
     <main>
       {exams.map((exam) => (
         <section id={exam.id} aria-labelledby={`${exam.id}-h`}>
-          <h2 id={`${exam.id}-h`}>{exam.title}</h2>
+          <div class="exam-head">
+            <h2 id={`${exam.id}-h`}>{exam.title}</h2>
+            <a class="guide" href={exam.guideUrl} target="_blank" rel="noopener noreferrer">
+              Official exam guide (PDF) <span aria-hidden="true">↗</span>
+            </a>
+          </div>
           <p class="meta">{exam.code} · {exam.effective}</p>
           <ol class="domains">
             {exam.domains.map((d) => (
@@ -83,7 +88,10 @@ const build = (process.env.GITHUB_SHA ?? 'local').slice(0, 7);
     font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
   h1 { font-size: 1.9rem; margin: 0 0 4px; }
-  h2 { font-size: 1.3rem; margin: 40px 0 0; }
+  h2 { font-size: 1.3rem; margin: 0; }
+  .exam-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-top: 40px; }
+  .guide { font-size: 0.9rem; color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .guide:hover, .guide:focus-visible { text-decoration: underline; }
   h3 { font-size: 1rem; margin: 0; }
   .lede, .meta { color: var(--muted); margin: 4px 0 0; }
   nav { display: flex; gap: 8px; margin-top: 16px; }

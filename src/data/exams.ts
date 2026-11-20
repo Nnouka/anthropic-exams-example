@@ -7,6 +7,7 @@ export type Exam = {
   title: string;
   code: string;
   effective: string;
+  guideUrl: string; // official exam guide PDF, linked from the Partner Academy certifications page
   domains: Domain[];
 };
 
@@ -16,6 +17,8 @@ export const exams: Exam[] = [
     title: 'Claude Certified Developer – Foundations',
     code: 'CCDV-F',
     effective: 'Guide effective December 7, 2026',
+    guideUrl:
+      'https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946771/Claude_Certified_Developer_-_Foundations_Exam_Guide_Updated_Dec_7.pdf',
     domains: [
       {
         name: 'Agents and Workflows',
@@ -90,6 +93,8 @@ export const exams: Exam[] = [
     title: 'Claude Certified Developer – Professional',
     code: 'CCDV-P',
     effective: 'Guide effective November 2026',
+    guideUrl:
+      'https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794947325/Claude_Certified_Developer-Professional_Exam_Guide.pdf',
     domains: [
       {
         name: 'Advanced Agent Architecture and Orchestration',

@@ -7,6 +7,13 @@ test('lists the Foundations and Professional exams', () => {
 });
 
 for (const exam of exams) {
+  test(`${exam.code}: links to the official exam guide PDF`, () => {
+    const url = new URL(exam.guideUrl);
+    assert.equal(url.protocol, 'https:');
+    assert.equal(url.hostname, 'cc.sj-cdn.net');
+    assert.ok(url.pathname.endsWith('.pdf'), url.pathname);
+  });
+
   test(`${exam.code}: 8 domains`, () => {
     assert.equal(exam.domains.length, 8);
   });
