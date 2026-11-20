@@ -1,0 +1,63 @@
+name: Deploy exam topics
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege: the job can push gh-pages and nothing else.
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # Deterministic gates first: Claude never decides whether to build or test.
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      # Windows checkouts don't carry the executable bit, so set it here.
+      - run: chmod +x scripts/*.sh
+
+      # Claude's job: release, check status, roll back if unhealthy, write the summary.
+      # It can run exactly three commands and nothing else. dontAsk denies anything off the list.
+      - name: Claude deploys, verifies, and writes the summary
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude -p "Deploy build ${GITHUB_SHA::7} of the exam topics site.
+          1. Run ./scripts/deploy.sh.
+          2. Run ./scripts/status.sh to confirm the live site shows this build.
+          3. If status.sh reports unhealthy, run ./scripts/rollback.sh.
+          Then write a short deployment summary in Markdown: what you deployed, what status reported, and whether you rolled back.
+          Finish with exactly one last line: 'RESULT: deployed' if the live site is healthy on this build, otherwise 'RESULT: rolled-back'." \
+            --allowedTools "Bash(./scripts/deploy.sh),Bash(./scripts/status.sh),Bash(./scripts/rollback.sh)" \
+            --permission-mode dontAsk > deployment-summary.md
+
+      - name: Publish the summary
+        if: always()
+        run: |
+          if [ -f deployment-summary.md ]; then cat deployment-summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+
+      # Deterministic check on the agent's report: the job passes only if Claude says it deployed.
+      - name: Fail unless deployed
+        run: |
+          tail -n 1 deployment-summary.md | grep -qx 'RESULT: deployed'

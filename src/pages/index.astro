@@ -1,0 +1,111 @@
+---
+import { exams } from '../data/exams.ts';
+
+// Build marker: scripts/status.sh looks for this to confirm the new build is live.
+const build = (process.env.GITHUB_SHA ?? 'local').slice(0, 7);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Claude Developer Exam Topics</title>
+    <meta name="description" content="Topics on the Claude Certified Developer Foundations and Professional exams." />
+  </head>
+  <body>
+    <header>
+      <h1>Claude Developer Exam Topics</h1>
+      <p class="lede">
+        Only the topics: each exam's domains, their weights, and the skills measured.
+      </p>
+      <nav aria-label="Exams">
+        {exams.map((e) => <a href={`#${e.id}`}>{e.code}</a>)}
+      </nav>
+    </header>
+
+    <main>
+      {exams.map((exam) => (
+        <section id={exam.id} aria-labelledby={`${exam.id}-h`}>
+          <h2 id={`${exam.id}-h`}>{exam.title}</h2>
+          <p class="meta">{exam.code} · {exam.effective}</p>
+          <ol class="domains">
+            {exam.domains.map((d) => (
+              <li>
+                <div class="domain-head">
+                  <h3>{d.name}</h3>
+                  <span class="weight">{d.weight}%</span>
+                </div>
+                <div class="bar" aria-hidden="true"><span style={`width:${d.weight * 5}%`}></span></div>
+                <ul>
+                  {d.skills.map((s) => <li>{s}</li>)}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </main>
+
+    <footer>
+      <small>Build <code data-build>{build}</code></small>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #fbfaf8;
+    --fg: #1f1d1a;
+    --muted: #6b665e;
+    --card: #ffffff;
+    --line: #e4e0d8;
+    --accent: #c15f3c;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1816;
+      --fg: #f1eee8;
+      --muted: #a39d92;
+      --card: #24211e;
+      --line: #38342f;
+      --accent: #e08a68;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    max-width: 760px;
+    padding: 32px 16px 48px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; }
+  h2 { font-size: 1.3rem; margin: 40px 0 0; }
+  h3 { font-size: 1rem; margin: 0; }
+  .lede, .meta { color: var(--muted); margin: 4px 0 0; }
+  nav { display: flex; gap: 8px; margin-top: 16px; }
+  nav a {
+    padding: 4px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  nav a:hover, nav a:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .domains { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 12px; }
+  .domains > li {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .domain-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .weight { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bar { height: 4px; background: var(--line); border-radius: 2px; margin: 8px 0 10px; }
+  .bar span { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+  .domains ul { margin: 0; padding-left: 20px; color: var(--muted); }
+  footer { margin-top: 40px; color: var(--muted); }
+</style>
