@@ -43,11 +43,11 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          claude -p "Deploy build ${GITHUB_SHA::7} of the exam topics site.
+          claude -p "Deploy build ${GITHUB_SHA::7} of the exam topics site. An earlier pipeline step already built dist/ from this commit.
           1. Run ./scripts/deploy.sh.
           2. Run ./scripts/status.sh to confirm the live site shows this build.
           3. If status.sh reports unhealthy, run ./scripts/rollback.sh.
-          Then write a short deployment summary in Markdown: what you deployed, what status reported, and whether you rolled back.
+          Your final reply is captured as the deployment summary, so do not write or edit any files. Make it short Markdown: what you deployed, what status reported, and whether you rolled back.
           Finish with exactly one last line: 'RESULT: deployed' if the live site is healthy on this build, otherwise 'RESULT: rolled-back'." \
             --allowedTools "Bash(./scripts/deploy.sh),Bash(./scripts/status.sh),Bash(./scripts/rollback.sh)" \
             --permission-mode dontAsk > deployment-summary.md

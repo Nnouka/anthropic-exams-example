@@ -5,6 +5,7 @@ export type Domain = { name: string; weight: number; skills: string[] };
 export type Exam = {
   id: string;
   title: string;
+  short: string; // short name for navigation
   code: string;
   effective: string;
   guideUrl: string; // official exam guide PDF, linked from the Partner Academy certifications page
@@ -15,6 +16,7 @@ export const exams: Exam[] = [
   {
     id: 'foundations',
     title: 'Claude Certified Developer – Foundations',
+    short: 'Foundations',
     code: 'CCDV-F',
     effective: 'Guide effective December 7, 2026',
     guideUrl:
@@ -91,6 +93,7 @@ export const exams: Exam[] = [
   {
     id: 'professional',
     title: 'Claude Certified Developer – Professional',
+    short: 'Professional',
     code: 'CCDV-P',
     effective: 'Guide effective November 2026',
     guideUrl:
